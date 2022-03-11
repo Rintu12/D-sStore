@@ -11,8 +11,9 @@ overflow:hidden;
   display: flex;
   position: relative;
   overflow: hidden;
-  ${mobile({ display: "none" })}
-  z-index:1;
+  margin-top:calc(10%)
+  ${mobile({ display: "none" })};
+  
 `;
 
 const Arrow = styled.div`

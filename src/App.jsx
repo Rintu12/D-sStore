@@ -4,34 +4,58 @@ import ProductList from "./Pages/ProductsList";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Cart from "./Pages/Cart";
-import {BrowserRouter as Router,Route, Routes} from "react-router-dom";
-// import { Switch } from "@material-ui/core";
+import  RenderAddressForm from "./Pages/address";
+import Order  from "./component/Oder"
+ import About from './Pages/About'
 
+import {BrowserRouter as Router,Route,Switch,Redirect} from "react-router-dom";
+
+ import { useSelector } from "react-redux";
+ 
+ 
 
   const App = () => {
+    
 
+    // let id = location.state._id;
+    // const Navigate = useNavigate();
+    const user = useSelector(state => state.user.currentuser);
+    // const resister = useSelector(state => state.user.isregister);
+    // const resister = useSelector(state => state.Register.RegisterUser);
    
   return (
+    <>
     <Router>
-   <Routes>
-    <Route exact path="/" element={<Home/>}/>
-   </Routes>
-   <Routes>
-     <Route path="/products/:category" element={<ProductList/>}/>
-   </Routes>
-   <Routes>
-     <Route path="/product/:id" element={<Product/>} />
-   </Routes>
-   <Routes>
-   <Route path="/resister" element={<Register/>} />
-   </Routes>
-   <Routes>
-     <Route path="/login" element={<Login/>} />
-   </Routes>
-   <Routes>
-     <Route path="/cart" element={<Cart/>} />
-   </Routes>
-    </Router>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/products/:category">
+          <ProductList />
+        </Route>
+        <Route path="/product/:id">
+          <Product />
+        </Route>
+        <Route path="/cart">
+          <Cart />
+        </Route>
+       
+        <Route path="/login">{user ? <Redirect to="/" /> : <Login />}  </Route>
+        <Route path="/register" >
+          <Register/>
+         </Route>
+         <Route path= "/order" >
+         <RenderAddressForm >
+          <Order/>
+         </RenderAddressForm>
+         </Route>
+            <Route path="/About">
+           <About/>
+            </Route>
+      </Switch>
+         
+     </Router>
+    </>
   );
 };
  export default App;

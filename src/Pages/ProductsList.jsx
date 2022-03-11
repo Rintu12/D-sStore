@@ -12,7 +12,7 @@ const Container = styled.div`
 
 `;
 
-const Title = styled.h1`0
+const Title = styled.h1`
   margin: 20px;
 `;
 

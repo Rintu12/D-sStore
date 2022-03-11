@@ -1,14 +1,19 @@
+import { useState } from "react";
 import styled from "styled-components";
 import {mobile} from "../responsive";
+import {useDispatch, useSelector} from "react-redux"
+import { login } from "../apiCalls";
+import { Link } from "react-router-dom";
 
-const Container = styled.div`
+
+ const Container = styled.div`
   width: 100vw;
   height: 100vh;
   background: linear-gradient(
       rgba(255, 255, 255, 0.5),
       rgba(255, 255, 255, 0.5)
     ),
-    url("https://images.pexels.com/photos/6984650/pexels-photo-6984650.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940")
+    url("https://coreldrawdesign.com/resources/previews/preview-winter-sale-banner-fashion-free-vector-design--1607009989.jpg")
       center;
   background-size: cover;
   display: flex;
@@ -16,22 +21,22 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const Wrapper = styled.div`
+ const Wrapper = styled.div`
   width: 25%;
   padding: 20px;
   background-color: white;
   ${mobile({ width: "75%" })}
-`;
+ `;
 
 const Title = styled.h1`
   font-size: 24px;
   font-weight: 300;
 `;
 
-const Form = styled.form`
+ const Form = styled.form`
   display: flex;
   flex-direction: column;
-`;
+ `;
 
 const Input = styled.input`
   flex: 1;
@@ -48,30 +53,62 @@ const Button = styled.button`
   color: white;
   cursor: pointer;
   margin-bottom: 10px;
+  &:disabled{
+    color:green;
+    cursor:not-allowed;
+  }
 `;
 
-const Link = styled.a`
+const Linkd = styled.a`
   margin: 5px 0px;
   font-size: 12px;
   text-decoration: underline;
   cursor: pointer;
+  color:green;
 `;
+const Error = styled.span`
+color:red;
+
+`
 
 const Login = () => {
+
+  const [username,setusername] = useState("");
+  const [password,setpassword] = useState("");
+  const {isfetching,error}  = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  function handelClic(e){
+  e.preventDefault();
+  login(dispatch,{username,password});
+  // window.location.reload()
+  };
   return (
-    <Container>
+     <Container>
       <Wrapper>
         <Title>SIGN IN</Title>
-        <Form>
-          <Input placeholder="username" />
-          <Input placeholder="password" />
-          <Button>LOGIN</Button>
-          <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
-        </Form>
+         <Form>
+           <Input placeholder="username" 
+            onChange={(e) => setusername(e.target.value)}
+           />
+           <Input placeholder="password"
+           type="password"
+           onChange={(e) => setpassword(e.target.value)}
+           />
+           <Button onClick={handelClic} disabled = {isfetching} >LOGIN</Button>
+           {error && <Error>something went wrong</Error>}
+           <Link style={{color:"red"}} to={"/"}>DO NOT YOU REMEMBER THE PASSWORD?</Link>
+           <Link to={"/register"}>
+           <Linkd>CREATE A NEW ACCOUNT</Linkd>
+           </Link>
+           </Form>
       </Wrapper>
-    </Container>
+     </Container>
   );
 };
 
 export default Login;
+
+
+
+
+

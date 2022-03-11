@@ -118,20 +118,21 @@ import {
           <List>
             
             <ListItem> <Link to={"/#"}>Home</Link></ListItem>
-            <ListItem> <Link to={"/#"}>Cart</Link></ListItem>
+            <ListItem> <Link to={"/cart"}>Cart</Link></ListItem>
             <ListItem> <Link to={"/#"}>Man Fashion</Link></ListItem>
             <ListItem> <Link to={"/#"}>Woman Fashion</Link> </ListItem>
             <ListItem> <Link to={"/#"}>Accessories</Link></ListItem>
             <ListItem> <Link to={"/#"}>My Account</Link></ListItem>
-            <ListItem> <Link to={"/#"}>Order Tracking</Link></ListItem>
+            <ListItem> <Link to={"/order"}>Order Tracking</Link></ListItem>
             <ListItem> <Link to={"/#"}> Wishlist</Link></ListItem>
             <ListItem> <Link to={"/#"}>Wishlist</Link></ListItem>
-            <ListItem> <Link to={"/#"}>Terms</Link></ListItem>
+            <ListItem> <Link to={"/example"}>Terms</Link></ListItem>
           </List>
         </Center>
         <Right>
           <Title>Contact</Title>
           <ContactItem>
+          
             <Room style={{marginRight:"10px"}}/> Westbengal , kolkata 98336 B.S Road
           </ContactItem>
           <ContactItem>

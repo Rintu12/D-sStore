@@ -1,13 +1,15 @@
 import { Add, Remove } from "@material-ui/icons";
-import { useSelector } from "react-redux";
+import { useSelector , useDispatch  } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../component/AnnouncentMent";
 import Footer from "../component/Footer";
 import Navbar from "../component/Navbar";
 import { mobile } from "../responsive";
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-
-
+import { useEffect, useState } from "react";
+import {USER_REQUEST} from "../requestMethod";
+import { store } from "../redux/store";
+import {Addproduct} from "../redux/cartredux"
+import axios  from "axios";
 const Container = styled.div`
   z-index:-1;
 `;
@@ -157,9 +159,46 @@ const Button = styled.button`
   font-weight: 600;
   cursor:pointer;
 `;
+const Cart = (props) => {
+   
 
-const Cart = () => {
-   const cart = useSelector(state => state.cart)
+   const cart = useSelector(state => state.cart);
+      const dispatch = useDispatch();
+
+       const [Cartproducts , setcartproducts] = useState([]);
+       useEffect(() =>{
+        const canceltoken = axios.CancelToken;
+        const source = canceltoken.source();
+           
+          const getcartproducts = async ()=>{
+            const {authenticate} = store.getState().user;
+            if(authenticate === true){
+          const res = await USER_REQUEST.post("cart/getuserCart" , {cancelToken:source.token});
+          //  const {authenticate} = store.getState().user;
+          //  if(authenticate === true){
+            // if response status code is 200 then set response data 
+           if(res.status === 200){
+              setcartproducts(res.data.products); 
+           }
+           
+          }
+       }
+        
+       getcartproducts()
+       //  this is  the cleanup function;
+          return ()=>{
+           
+          source.cancel();
+          }
+        
+       },[cart.products]);
+
+       useEffect(() =>{
+        
+        dispatch(Addproduct(Cartproducts))
+
+       })
+   //****************************************
   return (
     <Container>
       <Navbar />
@@ -167,7 +206,7 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+          <TopButton >CONTINUE SHOPPING</TopButton>
           <TopTexts>
             <TopText>Shopping Bag(2)</TopText>
             <TopText>Your Wishlist (0)</TopText>
@@ -176,36 +215,41 @@ const Cart = () => {
         </Top>
         <Bottom>
           <Info>
-          {cart.products.map( product =>(
 
-        
-            <Product>
-              <ProductDetail>
-                <Image src={product.img} />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> {product.title}
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> {product._id}
-                  </ProductId>
-                  <ProductColor color={product.color} />
-                  <ProductSize>
-                    <b>Size:</b> {product.size}
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-               <DeleteOutlinedIcon />
-                  <Add />
-                  <ProductAmount>{product.quentity}</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>{product.price*product.quentity}</ProductPrice>
-              </PriceDetail>
-            </Product>
-            ))}
+              {Cartproducts.flatMap(( iteam) =>(
+             
+          
+<Product  key={iteam._id}>
+
+  <ProductDetail>
+    <Image src={iteam.img} />
+    <Details>
+      <ProductName>
+        <b>Product:</b> {iteam.title}
+      </ProductName>
+      <ProductId>
+        <b>ID:</b> {iteam._id}
+      </ProductId>
+      <ProductColor color={iteam.color} />
+      <ProductSize>
+        <b>Size:</b> {iteam.size}
+      </ProductSize>
+    </Details>
+  </ProductDetail>
+  <PriceDetail>
+    <ProductAmountContainer>
+      <Add />
+     
+      <ProductAmount>{iteam.quentity}</ProductAmount>
+      <Remove />
+    </ProductAmountContainer>
+    <ProductPrice>{iteam.price}</ProductPrice>
+  </PriceDetail>
+</Product>
+              
+
+              ))}
+           
             <Hr />
             
           </Info>
@@ -225,9 +269,20 @@ const Cart = () => {
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>{cart.totalprice}</SummaryItemPrice>
+              <SummaryItemPrice>{cart.totalprice} </SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            {/* <StripeCheckout
+              name="D&S."
+              billingAddress
+              shippingAddress
+              description={`your total ${cart.totalprice}`}
+              amount={cart.totalprice*100}
+              token={onToken}
+              stripeKey={stripetoken}
+              > */}
+              
+            <Button >CHECKOUT NOW</Button> 
+          
           </Summary>
         </Bottom>
       </Wrapper>

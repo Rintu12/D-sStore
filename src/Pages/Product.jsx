@@ -7,14 +7,14 @@ import Newsletter from "../component/Newsletter";
 import { mobile } from "../responsive";
 import { PUBLIC_REQUEST} from "../requestMethod";
 import { useState , useEffect} from "react";
-import {useLocation} from "react-router-dom"
-import { Addproduct } from "../redux/cartredux";
-import { useDispatch } from "react-redux";
-
+import { useLocation } from "react-router-dom"
+import {addtocart} from "../action/cart"
+import  {  MaterialButton} from "./order/meterialInput";
+import { Link } from "react-router-dom";
+// import { addToCart } from "../action/cartaction";
 const Container = styled.div`
 z-index:-1;
 `;
-
 const Wrapper = styled.div`
   padding: 50px;
   display: flex;
@@ -123,79 +123,76 @@ const Button = styled.button`
 
 const Product = () => {
   const Location = useLocation();
-   const id = Location.pathname.split("/")[2];
-   const [products , setproducts] = useState({});
+   const _id = Location.pathname.split("/")[2];
+   const [product , setproducts] = useState({});
    const [quentity,setquentity]  = useState(1);
-   const [color,setcolor]  = useState("");
    const [size,setsize]  = useState("");
-   const dispatch = useDispatch();
-
-    
-
-
    // fetch the products   from the db 
    useEffect(() => {
+            
       const getproducts = async () =>{
 
         try{
-          const res = await PUBLIC_REQUEST.get("/products/find/"+id);
+          const res = await PUBLIC_REQUEST.get("/products/find/"+_id);
           setproducts(res.data);
           // console.log(res)
 
 
         }catch(err){
+         
 
-        };
+         };
       }
       getproducts();
+
     //  console.log(getproducts())
      
-   }, [id])
+   }, [_id])
 
  // ffuntion to the quentit  to  this product
  const  quentityhowmouch =  (type) =>{
+  
  // check if the type is desc
  if(type  === "dese"){
+     
    quentity > 1 && setquentity(quentity-1);
  }else {
-  setquentity(quentity+1);
-
+    setquentity(quentity+1)
  }
  };
+ 
  // handel cart product  click tha cart buttton to add quentity to the cart  badge
   function handelCart(){
-      dispatch( Addproduct( { ...products,quentity, color ,size}));   
+     
+      addtocart(_id , quentity )
+     
   };
-
-  
-
   return (
     <Container>
       <Navbar />
       <Announcement />
       <Wrapper>
         <ImgContainer>
-          <Image src={products.img}/>
+          <Image src={product.img}/>
         </ImgContainer>
         <InfoContainer>
-          <Title>{products.title}</Title>
+          <Title>{product.title}</Title>
           <Desc>
-           {products.desc}
+           {product.desc}
           </Desc>
-          <Price>{products.price}</Price>
+          <Price>{product.price}</Price>
           <FilterContainer>
             <Filter>
-              <FilterTitle onChange={(e) => setcolor(e.target.value)}>Color</FilterTitle>
-              {products.color?.map((c) =>(      /// map   throw all color to set this color to this products
+              <FilterTitle >Color</FilterTitle>
+              {product.color?.map((c) =>(      /// map   throw all color to set this color to this products
                 <FilterColor color={c}  key={c}/>
               ))}
               
-             
             </Filter> 
             <Filter>
               <FilterTitle>Size</FilterTitle>
               <FilterSize onChange={(e) =>  setsize(e.target.value ) }>
-              {products.size?.map((s) =>(         // map throw all size to set  this size
+              {product.size?.map((s) =>(         // map throw all size to set  this size
                 <FilterSizeOption key={s}>{s}</FilterSizeOption>
 
               ))}
@@ -210,12 +207,18 @@ const Product = () => {
               <Add onClick={() => quentityhowmouch("ase")} />
             </AmountContainer>
             <Button onClick={()=> handelCart()}>ADD TO CART</Button>
+             <Link to={{pathname:"/order" ,
+              state:{id:_id , quantity:quentity, totalPrice:quentity * product.price}}}><MaterialButton
+             style={{
+              marginLeft:"20px"
+
+             }}
+              title="BUY :)"/> </Link>
           </AddContainer>
-        </InfoContainer>
+          </InfoContainer>
       </Wrapper>
       <Newsletter />
       <Footer />
-      
     </Container>
   );
 };

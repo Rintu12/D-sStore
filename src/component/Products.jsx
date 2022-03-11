@@ -46,7 +46,7 @@ const Products = ({cat,sort,Filter})  => {
      
        getproducts();
        return () =>{
-         source.cancel();
+            source.cancel();
        };
        
 
@@ -60,10 +60,10 @@ const Products = ({cat,sort,Filter})  => {
     
     item[key].includes(value)
 
-    )
-    )
-   );
- },[product,cat,Filter]);
+     )
+        )
+    );
+     },[product,cat,Filter]);
  // sort seleted categories
  useEffect(() =>{
    

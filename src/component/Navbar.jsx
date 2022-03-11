@@ -5,19 +5,29 @@ import styled from "styled-components";
 import { Badge, makeStyles} from "@material-ui/core";
 import {    ShoppingCartOutlined } from "@material-ui/icons";
 import "./Navbar.css";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
  import { Link } from "react-router-dom";
+ import {logoutuser} from  "../redux/userReducer";
+ 
+
+//  import {PUBLIC_REQUEST} from "../requestMethod"
+//  import { useState ,useEffect} from 'react';
+ 
 
 
 
 const Container = styled.div`
-  width:100%;
+  
+  width:100%;z
   height:100px;
-  background-color:red;
-  opacity:.80;
+  background-color:black;
+  top:0px;
+  opacity:.90;
   display:inline-block;
-  position:sticky;
- 
+   position:stickey;
+  box-shadow: -3px 11px 5px 0px rgba(0,0,0,0.75);
+-webkit-box-shadow: -3px 11px 5px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: -3px 11px 5px 0px rgba(0,0,0,0.75);
 
   
 
@@ -33,29 +43,7 @@ margin-top:15px;
   display:flex;
  
 `;
-const Humbergur =  styled.div`
 
- margin-top:6px;
-    width: 35px;
-  height: 25px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  margin-Right:10px;
-  cursor:pointer;
-  
-  span{
-
-    width: 100%;
-          
-          height: 3px;
-          background-color:white;
-          transform-origin: left;
-  }
-              
- 
- `;
  const SearchContainer = styled.div`
   ${'' /* width:100%;
  display: flex;
@@ -83,7 +71,7 @@ const Center = styled.div`
 
  
  
-  flex:2; 
+  flex:1; 
  
   padding:0 15px;
    ${'' /* align-iteam:center;
@@ -93,7 +81,7 @@ const Center = styled.div`
 const Right = styled.div`
 max-width:100%;
  display:flex;
- flex:1;
+ flex:2;
  justify-content:space-between;
    padding:1.2rem;
 `; 
@@ -107,6 +95,7 @@ margin-right:40px;
   const    MenuItem = styled.div`
     font-weight:500;
     cursor:pointer;
+    color:white;
   `;
    
   const useStyles = makeStyles((theme)=>({
@@ -164,43 +153,32 @@ margin-right:40px;
 
 
     },
-    humbergur:{
-
-        [theme.breakpoints.down('sm')]:{
-          
-            width:"20px",
-            hight:"20px"
-
-
-        }
-
-    }
     
 
   }));
-  
  const Navbar = () => {
    const quentity = useSelector(state => state.cart.quentity); // to use store  from the redux configuertion
-
+    const dispatch  = useDispatch()
   
     const classes = useStyles();
-     
+    
+   const Logoutuser = () =>{     // logout user and then reload the initial page
+    
+    window.localStorage.clear();
+    // window.location.href = "/login";
+     dispatch(logoutuser());
+      
+
+  };
+  
     return (
         <div>
          
         <Container className={classes.mobile}>
          <Wraper  className={classes.Wraper}>
-
-           
          <Left className={classes.Left}>
          
-
-          
-         <Humbergur className={classes.humbergur}   >
-           <span className="1"></span>
-           <span className="2"></span>
-           <span className="3"></span>
-           </Humbergur>
+        <p style={{color:"white",marginTop:"10px",cursor:"pointer"}} onClick={Logoutuser} >LOGOUT</p>
            
            <SearchContainer>
             <Input placeholder="Search" />
@@ -217,13 +195,19 @@ margin-right:40px;
 
          </Center>
          <Right className={classes.right}>
-
+         <Link to={"/About"}>
+         <MenuItem>ABOUT</MenuItem>
+         </Link>
+          <Link to={"/register"}>
          <MenuItem>REGISTER</MenuItem>
-          <MenuItem  style={{}}>SIGN IN</MenuItem>
+         </Link>
+         <Link to={"/login"}>
+          <MenuItem  style={{}}>SIGN IN</MenuItem>,
+          </Link>
           <Link to={"/cart"}>
           <MenuItem>
             <Badge badgeContent={quentity} color="primary">
-              <ShoppingCartOutlined />
+              <ShoppingCartOutlined />+
             </Badge>
           </MenuItem>
           </Link>
